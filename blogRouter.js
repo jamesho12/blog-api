@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 // because of possibly returning from missing parameters?
 
 router.post('/', jsonParser, (req, res) => {
-  const requireFields = ['title', 'content', 'author', 'publishDate'];
+  const requiredFields = ['title', 'content', 'author', 'publishDate'];
   for(let i=0; i<requiredFields.length; i++) {
     const field = requiredFields[i];
     if(!(field in req.body)) {
@@ -27,8 +27,9 @@ router.post('/', jsonParser, (req, res) => {
       return res.status(400).send(message);
     }
   }
-  const post = BlogPosts.create(req.body.title, req.body.content. req.body.author, req.body.pusblishDate);
-  req.status(201).json(post);
+
+  const post = BlogPosts.create(req.body.title, req.body.content, req.body.author, req.body.publishDate);
+  res.status(201).json(post);
 });
 
 router.delete('/:id', (req, res) => {
@@ -40,7 +41,7 @@ router.delete('/:id', (req, res) => {
 // do we normally want to return the updated item as the response?
 
 router.put('/:id', jsonParser, (req, res) => {
-  const requireFields = ['title', 'content', 'author', 'publishDate'];
+  const requiredFields = ['title', 'content', 'author', 'publishDate'];
   for(let i=0; i<requiredFields.length; i++) {
     const field = requiredFields[i];
     if(!(field in req.body)) {
@@ -56,7 +57,7 @@ router.put('/:id', jsonParser, (req, res) => {
     console.error(message);
     return res.status(400).send(message);
   }
-  onsole.log(`Updating shopping list item \`${req.params.id}\``);
+  console.log(`Updating shopping list item \`${req.params.id}\``);
   const updatedPost = BlogPosts.update({
     id: req.params.id,
     title: req.body.title,

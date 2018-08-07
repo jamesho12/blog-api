@@ -18,7 +18,7 @@ describe('Blog List', function() {
 
   it('should list post on GET', function() {
     return chai.request(app)
-      .get('/recipes')
+      .get('/blog-posts')
       .then(function(res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -28,7 +28,7 @@ describe('Blog List', function() {
           const expectedKeys = ['id', 'title', 'content', 'author', 'publishDate'];
           res.body.forEach(function(post) {
             expect(post).to.be.a('object');
-            expec(post).to.include.keys(expectedKeys);
+            expect(post).to.include.keys(expectedKeys);
           });
       });
   });
@@ -38,10 +38,10 @@ describe('Blog List', function() {
       title: 'Article 4',
       content: 'This is the contents of article 3',
       author: 'Author 4',
-      publishDate: '4/04/2018'
+      publishDate: '04/04/2018'
     };
     return chai.request(app)
-      .post('/blog-list')
+      .post('/blog-posts')
       .send(newPost)
       .then(function(res) {
         expect(res).to.have.status(201);
@@ -54,15 +54,32 @@ describe('Blog List', function() {
   });
 
   it('should update post on PUT', function() {
-
+    const updateData = {
+      title: 'Updated Article',
+      content: 'Updated Content',
+      author: 'Updated Author',
+      publishDate: '08/01/2018'
+    };
+    return chai.request(app)
+      .get('/blog-posts')
+      .then(function(res) {
+        updateData.id = res.body[0].id;
+        return chai.request(app)
+          .put(`/blog-posts/${updateData.id}`)
+          .send(updateData)
+      })
+      .then(function(res) {
+        expect(res).to.have.status(204);
+        expect(res.body).to.be.a('object');
+      });
   });
 
   it('should delete items on DELETE', function() {
     return chai.request(app)
-      .get('/recipes')
+      .get('/blog-posts')
       .then(function(res) {
         return chai.request(app)
-          .delete(`/blog-list/${res.body[0].id}`);
+          .delete(`/blog-posts/${res.body[0].id}`);
       })
       .then(function(res) {
         expect(res).to.have.status(204);
